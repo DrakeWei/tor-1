@@ -8,6 +8,13 @@ ewfd防御都在这个目录，导出接口给库调用。
 - 在ebpf/test里面测一次
     -- 修改map_op clear
     -- 统一unit的create
+2025.10.29：
+- 编译项目：make build  生成可执行文件位于 build/bin/test
+- 扩展防御功能：编写符合 eBPF 程序编写规范的c代码，放在路径 ewfd-defense/bpf/new_defense 里，
+  用 clang 等编译器将 .ebpf.c 代码编译为 eBPF 字节码（目标文件 .o），
+  通过工具从 .o 文件中提取字节码，转换为 C 语言的十六进制数组，在头文件里硬编码，放在路径 ewfd-defense/src 里，
+  后期调用时，用 ebpf_load 函数加载字节码，用 ebpf_compile 函数编译字节码，用 ebpf_run_code 函数执行对应指令。
+  如果字节码是直接执行一套完整的逻辑，不需要注册到ewfd_helper？如果字节码是调用函数，包括CALL指令，需要将调用的函数注册到ewfd_helper。
 8-27日
 ---
 - (done) 搞定map create and release
